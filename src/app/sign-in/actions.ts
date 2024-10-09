@@ -22,5 +22,5 @@ export async function signInUser(data: Schema) {
     },
   });
 
-  return user;
+  return { ...user, id: userDoc.id };
 }
