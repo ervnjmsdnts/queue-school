@@ -71,7 +71,9 @@ export default function Staff() {
                       <TableCell>{item.contactNumber}</TableCell>
                       <TableCell>{item.email}</TableCell>
                       <TableCell>
-                        <Badge variant='secondary'>Counter 1</Badge>
+                        <Badge variant='secondary'>
+                          Counter {item.counter}
+                        </Badge>
                       </TableCell>
                       <TableCell className='flex justify-center'>
                         <EditStaff staff={item} />

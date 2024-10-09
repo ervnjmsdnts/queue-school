@@ -27,12 +27,27 @@ import { editStaff } from '../actions';
 import { toast } from 'react-toastify';
 import { Loader2, SquarePen } from 'lucide-react';
 import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useCollection } from '@/hooks/use-collection';
+import { Counter } from '@/lib/types';
+import { where } from 'firebase/firestore';
 
 export default function EditStaff({ staff }: { staff: EditSchema }) {
   const [open, setIsOpen] = useState(false);
   const form = useForm<EditSchema>({
     resolver: zodResolver(schema),
     values: staff ? staff : undefined,
+  });
+
+  const { isLoading: counterLoading, items } = useCollection<Counter>({
+    collectionName: 'counters',
+    queryConstraints: [where('isActive', '==', true)],
   });
 
   const { mutate, isLoading } = useMutation({
@@ -96,6 +111,33 @@ export default function EditStaff({ staff }: { staff: EditSchema }) {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='counter'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value.toString()}>
+                    <FormControl>
+                      <SelectTrigger disabled={counterLoading}>
+                        <SelectValue placeholder='Select counter' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {items.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          value={item.counterNum.toString()}>
+                          Counter {item.counterNum}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormItem>
               )}
             />

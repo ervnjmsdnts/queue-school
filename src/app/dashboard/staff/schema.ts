@@ -5,7 +5,7 @@ export const schema = z
     email: z.string().email().min(1),
     password: z.string().min(1),
     contactNumber: z.string().min(1),
-    // counter: z.string().min(1),
+    counter: z.coerce.number().min(1),
     name: z.string().min(1),
     confirmPassword: z.string().min(1),
   })

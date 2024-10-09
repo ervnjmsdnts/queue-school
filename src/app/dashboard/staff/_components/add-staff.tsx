@@ -26,10 +26,25 @@ import { addStaff } from '../actions';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { useCollection } from '@/hooks/use-collection';
+import { Counter } from '@/lib/types';
+import { where } from 'firebase/firestore';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function AddStaff() {
   const [isOpen, setIsOpen] = useState(false);
   const form = useForm<Schema>({ resolver: zodResolver(schema) });
+
+  const { isLoading: counterLoading, items } = useCollection<Counter>({
+    collectionName: 'counters',
+    queryConstraints: [where('isActive', '==', true)],
+  });
 
   const { mutate, isLoading } = useMutation({
     mutationFn: addStaff,
@@ -45,8 +60,6 @@ export default function AddStaff() {
   const onSubmit = (data: Schema) => {
     mutate({
       ...data,
-      createdAt: new Date().getTime(),
-      isActive: true,
     });
   };
 
@@ -118,6 +131,33 @@ export default function AddStaff() {
                   <FormControl>
                     <Input {...field} type='password' />
                   </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='counter'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value?.toString()}>
+                    <FormControl>
+                      <SelectTrigger disabled={counterLoading}>
+                        <SelectValue placeholder='Select counter' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {items.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          value={item.counterNum.toString()}>
+                          Counter {item.counterNum}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormItem>
               )}
             />
