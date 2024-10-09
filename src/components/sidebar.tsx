@@ -20,7 +20,7 @@ const items = [
   { name: 'Queue List', route: '/dashboard/queue-list', icon: ClipboardList },
   { name: 'Ticket', route: '/dashboard/ticket', icon: Ticket },
   { name: 'Report', route: '/dashboard/report', icon: Sheet },
-  { name: 'Announcement', route: '/dashboard/announcement', icon: Megaphone },
+  { name: 'Announcement', route: '/dashboard/announcements', icon: Megaphone },
 ];
 
 export default function Sidebar() {
