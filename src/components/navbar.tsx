@@ -11,10 +11,22 @@ import {
 import { getUserInfo } from '@/lib/utils';
 import ChangePassword from './change-password';
 import { useState } from 'react';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function Navbar() {
   const user = getUserInfo();
   const [isOpenPass, setIsOpenPass] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+
+    await fetch('/api/logout');
+
+    localStorage.removeItem('user');
+
+    window.location.reload();
+  };
   return (
     <>
       <ChangePassword open={isOpenPass} onClose={() => setIsOpenPass(false)} />
@@ -45,7 +57,9 @@ export default function Navbar() {
                   Change Password
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

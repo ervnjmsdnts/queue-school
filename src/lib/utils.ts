@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getUserInfo() {
   if (typeof window !== 'undefined') {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+    return JSON.parse(localStorage.getItem('user') || "{name: 'ERROR'}");
   }
   return null; // Return a default value when `localStorage` is not available
 }
