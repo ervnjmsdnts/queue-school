@@ -25,3 +25,14 @@ export type Announcement = {
   createdAt: number;
   isActive: boolean;
 };
+
+export type Ticket = {
+  id: string;
+  counter: number;
+  createdAt: number;
+  isActive: boolean;
+  type: string;
+  isComplete: boolean;
+  scheduleDate: string;
+  ticketNumber: string;
+};

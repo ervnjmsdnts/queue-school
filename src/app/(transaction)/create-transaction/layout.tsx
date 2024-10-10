@@ -1,14 +1,12 @@
-import ShowAnnouncement from '@/components/show-announcement';
-import TransactionNav from '@/components/transaction-nav';
 import { db } from '@/lib/firebase';
 import { clientConfig, serverConfig } from '@/lib/firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { getTokens } from 'next-firebase-auth-edge';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
-export default async function TransactionLayout({
+export default async function CreateTransactionLayout({
   children,
 }: PropsWithChildren) {
   const tokens = await getTokens(cookies(), {
@@ -23,19 +21,20 @@ export default async function TransactionLayout({
   }
 
   const decodedToken = tokens.decodedToken;
+  const userUid = decodedToken.uid;
 
-  const ref = doc(db, 'users', `${decodedToken.uid}`);
+  const ticketsRef = collection(db, 'tickets');
+  const ticketsQuery = query(
+    ticketsRef,
+    where('userId', '==', userUid),
+    where('isComplete', '==', false),
+    where('isActive', '==', true),
+  );
+  const ticketDocs = await getDocs(ticketsQuery);
 
-  const user = (await getDoc(ref)).data();
-
-  if (user && (user.role === 'admin' || user.role === 'staff')) {
-    redirect('/dashboard');
+  if (!ticketDocs.empty) {
+    return redirect('/');
   }
 
-  return (
-    <div className='h-screen flex flex-col'>
-      <TransactionNav />
-      {children}
-    </div>
-  );
+  return children;
 }
