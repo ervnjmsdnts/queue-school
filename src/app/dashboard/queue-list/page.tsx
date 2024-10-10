@@ -34,14 +34,16 @@ export default function QueueList() {
   const user = getUserInfo();
   const { items, isLoading } = useCollection<Ticket>({
     collectionName: 'tickets',
-    queryConstraints: [where('counter', '==', user?.counter)],
+    queryConstraints: [
+      where('counter', '==', user?.counter),
+      where('isActive', '==', true),
+      where('isComplete', '==', false),
+    ],
     sortField: 'createdAt',
     sortBy: 'asc',
   });
 
   const numberInQueue = items?.filter((item) => !item.isComplete)?.length;
-
-  console.log(items);
 
   const { currentItems, paginate, currentPage, totalPages } =
     usePagination<Ticket>(items);
