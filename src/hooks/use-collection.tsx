@@ -15,12 +15,14 @@ export const useCollection = <T extends { id: string }>({
   queryConstraints = [],
   searchField,
   sortField,
+  sortBy = 'asc',
   searchValue = '',
 }: {
   collectionName: string;
   queryConstraints?: QueryConstraint[];
   searchField?: keyof T; // Ensures searchField is one of the fields in type T
   sortField?: keyof T; // Ensures sortField is one of the fields in type T
+  sortBy?: 'asc' | 'desc';
   searchValue?: string;
 }) => {
   const [items, setItems] = useState<T[]>([]);
@@ -42,9 +44,18 @@ export const useCollection = <T extends { id: string }>({
           ? fetchedItems.sort((a, b) => {
               const fieldA = a[sortField];
               const fieldB = b[sortField];
-              return typeof fieldA === 'number' && typeof fieldB === 'number'
-                ? fieldB - fieldA
-                : 0;
+              // Handle numeric and string sorting based on the sortBy value
+              if (typeof fieldA === 'number' && typeof fieldB === 'number') {
+                return sortBy === 'asc' ? fieldA - fieldB : fieldB - fieldA;
+              } else if (
+                typeof fieldA === 'string' &&
+                typeof fieldB === 'string'
+              ) {
+                return sortBy === 'asc'
+                  ? fieldA.localeCompare(fieldB)
+                  : fieldB.localeCompare(fieldA);
+              }
+              return 0;
             })
           : fetchedItems;
 

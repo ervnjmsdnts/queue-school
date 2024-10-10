@@ -34,7 +34,7 @@ export default async function TransactionLayout({
 
   return (
     <div className='h-screen flex flex-col'>
-      <TransactionNav />
+      <TransactionNav user={user} />
       {children}
     </div>
   );

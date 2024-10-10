@@ -8,14 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { getUserInfo } from '@/lib/utils';
 import ChangePassword from './change-password';
 import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
-export default function Navbar() {
-  const user = getUserInfo();
+export default function Navbar({ user }: { user: any }) {
   const [isOpenPass, setIsOpenPass] = useState(false);
 
   const handleLogout = async () => {
@@ -37,9 +35,10 @@ export default function Navbar() {
             <div className='flex text-xs flex-col text-right'>
               <p className='font-semibold'>{user?.name}</p>
               <p>
-                {user.role
+                {user?.role
                   ? user?.role?.charAt(0)?.toUpperCase() + user?.role?.slice(1)
-                  : 'ERROR'}
+                  : ''}{' '}
+                {user?.role === 'staff' && `(Counter ${user?.counter})`}
               </p>
             </div>
             <DropdownMenu>

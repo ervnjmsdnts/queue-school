@@ -31,9 +31,9 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
   }
   return (
     <div className='h-screen flex'>
-      <Sidebar />
+      <Sidebar user={user} />
       <div className='w-[80%] flex flex-col overflow-scroll'>
-        <Navbar />
+        <Navbar user={user} />
         {children}
       </div>
     </div>
