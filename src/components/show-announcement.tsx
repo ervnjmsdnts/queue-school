@@ -39,10 +39,7 @@ function Announcements({ items }: { items: Announcement[] }) {
                   </div>
                 </div>
               </div>
-              <p className='text-muted-foreground'>
-                {item.description} Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Saepe, eum.
-              </p>
+              <p className='text-muted-foreground'>{item.description}</p>
             </div>
           ))}
         </div>

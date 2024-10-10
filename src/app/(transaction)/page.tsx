@@ -6,12 +6,7 @@ import { type Ticket } from '@/lib/types';
 import { cn, getUserInfo } from '@/lib/utils';
 import { format } from 'date-fns';
 import { where } from 'firebase/firestore';
-import {
-  Calendar,
-  Loader2,
-  Smartphone,
-  Ticket as TicketIcon,
-} from 'lucide-react';
+import { Calendar, Loader2, Ticket as TicketIcon } from 'lucide-react';
 import Link from 'next/link';
 import { HTMLAttributes } from 'react';
 import { useMutation } from 'react-query';
