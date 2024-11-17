@@ -9,6 +9,8 @@ import { Loader2, Printer, TicketIcon } from 'lucide-react';
 import { useMutation } from 'react-query';
 import { completeTicket } from './actions';
 import { toast } from 'react-toastify';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 export default function Ticket() {
   const user = getUserInfo();
@@ -30,6 +32,14 @@ export default function Ticket() {
     },
   });
 
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const printTicket = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: 'ticket',
+    pageStyle: '@page {margin: 0 !important;}',
+  });
+
   return (
     <div className='flex-1 p-4 flex flex-col'>
       {isLoading ? (
@@ -44,7 +54,7 @@ export default function Ticket() {
               Ticket
             </div>
             {items.length > 0 && (
-              <Button>
+              <Button onClick={() => printTicket()}>
                 <Printer className='w-4 h-4 mr-2' />
                 Print
               </Button>
@@ -59,7 +69,7 @@ export default function Ticket() {
           ) : (
             <>
               <div className='flex-grow max-w-lg w-full mx-auto'>
-                <PrintTicket isPrint {...items[0]} />
+                <PrintTicket ref={printRef} isPrint {...items[0]} />
               </div>
               <div className='self-end'>
                 <Button
