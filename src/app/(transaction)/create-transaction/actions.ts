@@ -67,6 +67,10 @@ export async function addTicket(payload: Schema) {
       ticketNumber: paddedTicketNumber,
       ...payload,
       scheduleDate: scheduleDate.getTime(),
+      customer: {
+        name: user.name,
+        contactNumber: user.contactNumber,
+      },
     });
   } catch (error) {
     throw new Error((error as Error).message);

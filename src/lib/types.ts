@@ -35,4 +35,9 @@ export type Ticket = {
   isComplete: boolean;
   scheduleDate: number;
   ticketNumber: string;
+  completionDate?: number;
+  customer: {
+    name: string;
+    contactNumber: string;
+  };
 };

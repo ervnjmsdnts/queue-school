@@ -34,7 +34,6 @@ const items = [
     role: 'staff',
   },
   { name: 'Ticket', route: '/dashboard/ticket', icon: Ticket, role: 'staff' },
-  { name: 'Report', route: '/dashboard/report', icon: Sheet, role: 'admin' },
   {
     name: 'Announcement',
     route: '/dashboard/announcements',
