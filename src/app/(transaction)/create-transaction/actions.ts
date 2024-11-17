@@ -17,6 +17,35 @@ export async function addTicket(payload: Schema) {
     const user = await getUserInfo();
     if (!user) throw new Error('User not found');
 
+    // Get today's date
+    const today = new Date();
+    const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    // Map day strings to numeric values
+    const dayMap: Record<string, number> = {
+      monday: 1,
+      tuesday: 2,
+      wednesday: 3,
+      thursday: 4,
+      friday: 5,
+    };
+
+    // Calculate the difference in days between today and the selected day
+    const selectedDay = dayMap[payload.scheduleDate.toLowerCase()];
+    if (selectedDay === undefined) {
+      throw new Error('Invalid schedule day selected');
+    }
+
+    let dayDifference = selectedDay - currentDay;
+    if (dayDifference < 0) {
+      // If the selected day is in the next week
+      dayDifference += 7;
+    }
+
+    // Calculate the date for the selected day
+    const scheduleDate = new Date(today);
+    scheduleDate.setDate(today.getDate() + dayDifference);
+
     // Get the latest ticket number
     const ticketsRef = collection(db, 'tickets');
     const q = query(ticketsRef, orderBy('ticketNumber', 'desc'), limit(1));
@@ -37,6 +66,7 @@ export async function addTicket(payload: Schema) {
       isComplete: false,
       ticketNumber: paddedTicketNumber,
       ...payload,
+      scheduleDate: scheduleDate.getTime(),
     });
   } catch (error) {
     throw new Error((error as Error).message);

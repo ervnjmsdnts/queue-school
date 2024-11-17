@@ -33,6 +33,6 @@ export type Ticket = {
   isActive: boolean;
   type: string;
   isComplete: boolean;
-  scheduleDate: string;
+  scheduleDate: number;
   ticketNumber: string;
 };

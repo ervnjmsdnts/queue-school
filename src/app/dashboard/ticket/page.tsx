@@ -9,21 +9,36 @@ import { Loader2, Printer, TicketIcon } from 'lucide-react';
 import { useMutation } from 'react-query';
 import { completeTicket } from './actions';
 import { toast } from 'react-toastify';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
 export default function Ticket() {
   const user = getUserInfo();
+
+  // Get today's start and end timestamps
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0)).getTime(); // Start of today
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999)).getTime(); // End of today
+
   const { items, isLoading } = useCollection<Ticket>({
     collectionName: 'tickets',
     queryConstraints: [
       where('counter', '==', user?.counter),
       where('isComplete', '==', false),
       where('isActive', '==', true),
+      // where('scheduleDate', '>=', startOfDay), // Only include tickets scheduled for today
+      // where('scheduleDate', '<=', endOfDay),
     ],
     sortField: 'createdAt',
     sortBy: 'asc',
   });
+
+  const scheduledItems = useMemo(() => {
+    return (items || []).filter(
+      (item) =>
+        item.scheduleDate >= startOfDay && item.scheduleDate <= endOfDay,
+    );
+  }, [items, endOfDay, startOfDay]);
 
   const { isLoading: completeLoading, mutate } = useMutation({
     mutationFn: completeTicket,
@@ -53,14 +68,14 @@ export default function Ticket() {
               <TicketIcon className='w-8 h-8' />
               Ticket
             </div>
-            {items.length > 0 && (
+            {scheduledItems.length > 0 && (
               <Button onClick={() => printTicket()}>
                 <Printer className='w-4 h-4 mr-2' />
                 Print
               </Button>
             )}
           </div>
-          {items.length === 0 ? (
+          {scheduledItems.length === 0 ? (
             <div className='flex items-center justify-center'>
               <h3 className='font-semibold text-muted-foreground text-2xl'>
                 No Items in Queue
@@ -69,12 +84,12 @@ export default function Ticket() {
           ) : (
             <>
               <div className='flex-grow max-w-lg w-full mx-auto'>
-                <PrintTicket ref={printRef} isPrint {...items[0]} />
+                <PrintTicket ref={printRef} isPrint {...scheduledItems[0]} />
               </div>
               <div className='self-end'>
                 <Button
                   disabled={completeLoading}
-                  onClick={() => mutate(items[0].id)}>
+                  onClick={() => mutate(scheduledItems[0].id)}>
                   {completeLoading && (
                     <Loader2 className='w-4 h-4 mr-2 animate-spin' />
                   )}

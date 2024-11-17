@@ -39,11 +39,20 @@ export default function QueueList() {
       where('isActive', '==', true),
       where('isComplete', '==', false),
     ],
-    sortField: 'createdAt',
+    sortField: 'scheduleDate',
     sortBy: 'asc',
   });
 
-  const numberInQueue = items?.filter((item) => !item.isComplete)?.length;
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0)).getTime(); // Start of today
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999)).getTime(); // End of today
+
+  const numberInQueue = items?.filter(
+    (item) =>
+      !item.isComplete &&
+      item.scheduleDate >= startOfDay && // Item's scheduleDate falls within today
+      item.scheduleDate <= endOfDay,
+  )?.length;
 
   const { currentItems, paginate, currentPage, totalPages } =
     usePagination<Ticket>(items);
@@ -67,6 +76,7 @@ export default function QueueList() {
                     <TableHead>Status</TableHead>
                     <TableHead>Serve</TableHead>
                     <TableHead>Created At</TableHead>
+                    <TableHead>Scheduled Date</TableHead>
                     {/* <TableHead className='text-center'>Action</TableHead> */}
                   </TableRow>
                 </TableHeader>
@@ -82,12 +92,24 @@ export default function QueueList() {
                               ? 'complete'
                               : !item.isActive
                               ? 'destructive'
-                              : 'pending'
+                              : new Date(item.scheduleDate).toDateString() <
+                                new Date().toDateString()
+                              ? 'warning' // Missed
+                              : new Date(item.scheduleDate).toDateString() >
+                                new Date().toDateString()
+                              ? 'default' // Upcoming
+                              : 'pending' // Today
                           }>
                           {item.isComplete
                             ? 'Complete'
                             : !item.isActive
                             ? 'Cancelled'
+                            : new Date(item.scheduleDate).toDateString() <
+                              new Date().toDateString()
+                            ? 'Missed'
+                            : new Date(item.scheduleDate).toDateString() >
+                              new Date().toDateString()
+                            ? 'Upcoming'
                             : 'Pending'}
                         </Badge>
                       </TableCell>
@@ -96,7 +118,8 @@ export default function QueueList() {
                           Counter {item.counter}
                         </Badge>
                       </TableCell>
-                      <TableCell>{format(item.createdAt, 'PPpp')}</TableCell>
+                      <TableCell>{format(item.createdAt, 'PP')}</TableCell>
+                      <TableCell>{format(item.scheduleDate, 'PP')}</TableCell>
                       {/* <TableCell className='flex justify-center'>
                         <Button size='icon' variant='ghost'>
                           <Check className='w-4 h-4 text-green-500' />

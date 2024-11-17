@@ -28,6 +28,7 @@ import { useMutation } from 'react-query';
 import { addTicket } from './actions';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function CreateTransaction() {
   const form = useForm<Schema>({ resolver: zodResolver(schema) });
@@ -51,6 +52,31 @@ export default function CreateTransaction() {
   const onSubmit = (data: Schema) => {
     mutate({ ...data });
   };
+
+  const [disabledDays, setDisabledDays] = useState<string[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+    // Map day numbers to toggle values
+    const dayMap = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ];
+
+    // Disable logic: Disable all if weekend, otherwise disable past days
+    if (currentDay === 0 || currentDay === 6) {
+      setDisabledDays(dayMap); // Disable all for weekends
+    } else {
+      setDisabledDays(dayMap.slice(0, currentDay)); // Disable days earlier than today
+    }
+  }, []);
 
   return (
     <div className='p-4 flex flex-col gap-4 lg:container lg:mx-auto'>
@@ -77,36 +103,22 @@ export default function CreateTransaction() {
                     className='justify-start flex-col items-start gap-2'
                     variant='outline'
                     type='single'>
-                    <ToggleGroupItem
-                      className='w-full text-lg py-6 px-4 justify-between'
-                      value='monday'>
-                      <p>Monday</p>
-                      <p>8:00AM - 5:00PM</p>
-                    </ToggleGroupItem>
-                    <ToggleGroupItem
-                      className='w-full text-lg py-6 px-4 justify-between'
-                      value='tuesday'>
-                      <p>Tuesday</p>
-                      <p>8:00AM - 5:00PM</p>
-                    </ToggleGroupItem>
-                    <ToggleGroupItem
-                      className='w-full text-lg py-6 px-4 justify-between'
-                      value='wednesday'>
-                      <p>Wednesday</p>
-                      <p>8:00AM - 5:00PM</p>
-                    </ToggleGroupItem>
-                    <ToggleGroupItem
-                      className='w-full text-lg py-6 px-4 justify-between'
-                      value='thursday'>
-                      <p>Thursday</p>
-                      <p>8:00AM - 5:00PM</p>
-                    </ToggleGroupItem>
-                    <ToggleGroupItem
-                      className='w-full text-lg py-6 px-4 justify-between'
-                      value='friday'>
-                      <p>Friday</p>
-                      <p>8:00AM - 5:00PM</p>
-                    </ToggleGroupItem>
+                    {[
+                      'monday',
+                      'tuesday',
+                      'wednesday',
+                      'thursday',
+                      'friday',
+                    ].map((day) => (
+                      <ToggleGroupItem
+                        disabled={disabledDays.includes(day)}
+                        key={day}
+                        className='w-full text-lg py-6 px-4 justify-between'
+                        value={day}>
+                        <p>{day.charAt(0).toUpperCase() + day.slice(1)}</p>
+                        <p>8:00AM - 5:00PM</p>
+                      </ToggleGroupItem>
+                    ))}
                   </ToggleGroup>
                 </FormControl>
               </FormItem>

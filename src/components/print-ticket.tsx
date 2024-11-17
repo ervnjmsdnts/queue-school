@@ -55,7 +55,7 @@ function Types({
 type PrintTicketType = {
   type: string;
   counter: number;
-  createdAt: number;
+  scheduleDate: number;
   ticketNumber: string;
   isPrint?: boolean;
   id: string;
@@ -66,7 +66,7 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
     {
       type,
       counter,
-      createdAt,
+      scheduleDate,
       ticketNumber,
       isPrint = false,
       id,
@@ -129,7 +129,7 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
             <div className='flex flex-col gap-4 flex-grow'>
               <div className='flex items-center gap-2 justify-center'>
                 <Calendar className='w-6 h-6' />
-                <p>{format(createdAt, 'PP')}</p>
+                <p>{format(scheduleDate, 'PP')}</p>
               </div>
               <div className='flex flex-col gap-2'>
                 <div className='flex items-center gap-2 justify-center'>
