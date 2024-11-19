@@ -18,7 +18,7 @@ const items = [
     name: 'Dashboard',
     route: '/dashboard',
     icon: LayoutDashboard,
-    role: 'all',
+    role: 'admin',
   },
   { name: 'Staff', route: '/dashboard/staff', icon: Contact, role: 'admin' },
   {
@@ -38,7 +38,7 @@ const items = [
     name: 'Announcement',
     route: '/dashboard/announcements',
     icon: Megaphone,
-    role: 'all',
+    role: 'admin',
   },
 ];
 

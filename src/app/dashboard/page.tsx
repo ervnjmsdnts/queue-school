@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { DateRange } from 'react-day-picker';
-import { addHours, format, subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
+import { CSVLink } from 'react-csv';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -66,6 +67,23 @@ export default function Dashboard() {
     );
   }, [items, date]);
 
+  const csvData = useMemo(
+    () =>
+      filteredTickets.map((ticket) => ({
+        Timestamp: format(ticket.createdAt, 'PPpp'),
+        'Customer Name': ticket.customer.name,
+        'Contact Number': ticket.customer?.contactNumber
+          ? `'${ticket.customer.contactNumber}`
+          : null,
+        Class: classType[ticket.type],
+        Counter: ticket.counter,
+        'Time Transaction Complete': ticket?.completionDate
+          ? format(ticket.completionDate, 'PPpp')
+          : null,
+      })),
+    [filteredTickets],
+  );
+
   const ticketsByCounter = useMemo(() => {
     // Use a Map to group and count tickets by counter name
     const counterMap = filteredTickets.reduce((acc, item) => {
@@ -108,7 +126,7 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center justify-between gap-2'>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -144,6 +162,11 @@ export default function Dashboard() {
                 />
               </PopoverContent>
             </Popover>
+            <Button asChild>
+              <CSVLink data={csvData} filename='report'>
+                Export
+              </CSVLink>
+            </Button>
           </div>
           {/* Table */}
           <div className='border max-h-[400px] overflow-y-auto'>
