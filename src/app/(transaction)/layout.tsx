@@ -29,7 +29,11 @@ export default async function TransactionLayout({
   const user = (await getDoc(ref)).data();
 
   if (user && (user.role === 'admin' || user.role === 'staff')) {
-    redirect('/dashboard');
+    if (user.role === 'admin') {
+      redirect('/dashboard');
+    } else if (user.role === 'staff') {
+      redirect('/dashboard/queue-list');
+    }
   }
 
   return (

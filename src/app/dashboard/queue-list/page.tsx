@@ -2,6 +2,7 @@
 import Pagination from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -16,16 +17,22 @@ import { Ticket } from '@/lib/types';
 import { getUserInfo } from '@/lib/utils';
 import { format } from 'date-fns';
 import { where } from 'firebase/firestore';
-import { Check, ClipboardList, Loader2, Trash } from 'lucide-react';
+import { ClipboardList, Loader2 } from 'lucide-react';
+import AddManual from './_components/add-manual';
 
 function QueueListHeader({ inQueue }: { inQueue: number }) {
   return (
     <div className='flex items-center justify-between'>
       <div className='flex items-center text-lg font-semibold gap-2'>
         <ClipboardList className='w-8 h-8' />
-        Queue List
+        <div className='flex flex-col'>
+          <p className='leading-5'>Queue List</p>
+          <h3 className='text-sm font-semibold text-muted-foreground'>
+            Number in Queue: {inQueue}
+          </h3>
+        </div>
       </div>
-      <h3 className='text-lg font-semibold'>Number in Queue: {inQueue}</h3>
+      <AddManual />
     </div>
   );
 }

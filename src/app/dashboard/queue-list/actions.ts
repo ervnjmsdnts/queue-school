@@ -1,21 +1,21 @@
-import { db } from '@/lib/firebase';
+import { getUserInfo } from '@/lib/utils';
 import { Schema } from './schema';
 import {
   addDoc,
   collection,
-  doc,
   getDocs,
   limit,
   orderBy,
   query,
-  updateDoc,
 } from 'firebase/firestore';
-import { getUserInfo } from '@/lib/utils';
+import { db } from '@/lib/firebase';
 
 export async function addTicket(payload: Schema) {
   try {
     const user = await getUserInfo();
     if (!user) throw new Error('User not found');
+
+    const { customerContact, customerName, ...rest } = payload;
 
     // Get today's date
     const today = new Date();
@@ -64,22 +64,13 @@ export async function addTicket(payload: Schema) {
       isActive: true,
       isComplete: false,
       ticketNumber: paddedTicketNumber,
-      ...payload,
+      counter: user.counter,
+      ...rest,
       scheduleDate: scheduleDate.getTime(),
       customer: {
-        name: user.name,
-        contactNumber: user.contactNumber,
+        name: customerName,
+        contactNumber: customerContact,
       },
-    });
-  } catch (error) {
-    throw new Error((error as Error).message);
-  }
-}
-
-export async function cancelTicket(ticketId: string) {
-  try {
-    await updateDoc(doc(db, 'tickets', `${ticketId}`), {
-      isActive: false,
     });
   } catch (error) {
     throw new Error((error as Error).message);
