@@ -24,25 +24,40 @@ import { useMutation } from 'react-query';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '../actions';
 import { schema, Schema } from '../schema';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { useState } from 'react';
 
 export default function SignUpForm() {
   const form = useForm<Schema>({ resolver: zodResolver(schema) });
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
-  const { mutate, isLoading } = useMutation({
-    onSuccess: () => {
+  const handleSubmit = async (data: Schema) => {
+    try {
+      setIsLoading(true);
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      );
+
+      await setDoc(doc(db, 'users', user.uid), {
+        ...data,
+        role: 'user',
+        createdAt: new Date().getTime(),
+        isActive: true,
+      });
+
       toast.success('Successfully registered');
       router.push('/sign-in');
-    },
-    onError: (error) => {
+    } catch (error) {
       toast.error((error as Error).message);
-    },
-    mutationFn: registerUser,
-  });
-
-  const onSubmit = (data: Schema) => {
-    mutate(data);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,7 +70,9 @@ export default function SignUpForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4'>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className='grid gap-4'>
             <FormField
               control={form.control}
               name='name'
