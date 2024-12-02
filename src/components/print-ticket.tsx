@@ -93,25 +93,25 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
       <div className='flex items-center justify-center h-full max-w-lg w-full'>
         <div
           ref={ref}
-          className='w-full flex flex-col border rounded-md container'>
+          className='w-full flex flex-col border border-black rounded-md container'>
           <div className='p-4'>
             <h3 className='text-lg font-semibold text-center pb-2'>
               Transaction Type
             </h3>
             <p className='text-center'>{transactionsObject[type]}</p>
           </div>
-          <hr />
+          <div className='w-full h-px bg-black' />
           <div className='p-4'>
             <div className='flex flex-col gap-2 items-center'>
-              <p>You are currently number</p>
-              <h2 className='text-5xl font-bold'>1</h2>
-              <p>
+              <p className='text-center'>You are currently number</p>
+              <h2 className='text-5xl font-bold text-center'>1</h2>
+              <p className='text-center'>
                 In line for{' '}
                 <span className='font-semibold'>Counter {counter}</span>
               </p>
             </div>
           </div>
-          <hr />
+          <div className='w-full h-px bg-black' />
           <div className='p-4 h-full'>
             <div className='flex flex-col h-full'>
               <div className='flex flex-col gap-4 flex-grow'>
