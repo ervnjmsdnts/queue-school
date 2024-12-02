@@ -32,6 +32,8 @@ export default async function CreateTransactionLayout({
   );
   const ticketDocs = await getDocs(ticketsQuery);
 
+  console.log(ticketDocs.docs?.[0]?.data());
+
   if (!ticketDocs.empty) {
     return redirect('/');
   }

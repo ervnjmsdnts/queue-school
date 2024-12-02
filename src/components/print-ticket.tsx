@@ -18,6 +18,16 @@ const transactions = [
   { value: 'I', label: 'Industrial' },
 ];
 
+const transactionsObject: Record<string, string> = {
+  R: 'Residential',
+  A: 'Agricultural',
+  CO: 'Commercial',
+  M: 'Machinery',
+  BT: 'Business Tax',
+  CE: 'Cedula',
+  I: 'Industrial',
+};
+
 interface TransactionTypes extends HTMLAttributes<HTMLParagraphElement> {
   label: string;
   value: string;
@@ -80,80 +90,59 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
       },
     });
     return (
-      <div
-        ref={ref}
-        className='w-full flex-grow h-full flex flex-col border rounded-md container'>
-        <div className='p-4'>
-          <h3 className='font-semibold text-lg pb-2'>Transactions</h3>
-          <div className='p-4 border rounded-sm'>
-            <div className='grid grid-cols-2'>
-              <div className='grid gap-1 items-start'>
-                {transactions.slice(0, 3).map((t) => (
-                  <Types
-                    isPrint={isPrint}
-                    value={t.value}
-                    key={t.value}
-                    label={t.label}
-                    ticketValue={type}
-                  />
-                ))}
-              </div>
-              <div className='grid gap-1'>
-                {transactions.slice(3).map((t) => (
-                  <Types
-                    isPrint={isPrint}
-                    key={t.value}
-                    value={t.value}
-                    ticketValue={type}
-                    label={t.label}
-                  />
-                ))}
-              </div>
+      <div className='flex items-center justify-center h-full max-w-lg w-full'>
+        <div
+          ref={ref}
+          className='w-full flex flex-col border rounded-md container'>
+          <div className='p-4'>
+            <h3 className='text-lg font-semibold text-center pb-2'>
+              Transaction Type
+            </h3>
+            <p className='text-center'>{transactionsObject[type]}</p>
+          </div>
+          <hr />
+          <div className='p-4'>
+            <div className='flex flex-col gap-2 items-center'>
+              <p>You are currently number</p>
+              <h2 className='text-5xl font-bold'>1</h2>
+              <p>
+                In line for{' '}
+                <span className='font-semibold'>Counter {counter}</span>
+              </p>
             </div>
           </div>
-        </div>
-        <hr />
-        <div className='p-4'>
-          <div className='flex flex-col gap-2 items-center'>
-            <p>You are currently number</p>
-            <h2 className='text-5xl font-bold'>1</h2>
-            <p>
-              In line for{' '}
-              <span className='font-semibold'>Counter {counter}</span>
-            </p>
-          </div>
-        </div>
-        <hr />
-        <div className='p-4 h-full'>
-          <div className='flex flex-col h-full'>
-            <div className='flex flex-col gap-4 flex-grow'>
-              <div className='flex items-center gap-2 justify-center'>
-                <Calendar className='w-6 h-6' />
-                <p>{format(scheduleDate, 'PP')}</p>
-              </div>
-              <div className='flex flex-col gap-2'>
+          <hr />
+          <div className='p-4 h-full'>
+            <div className='flex flex-col h-full'>
+              <div className='flex flex-col gap-4 flex-grow'>
                 <div className='flex items-center gap-2 justify-center'>
-                  <TicketIcon className='w-6 h-6' />
-                  <p>Your Ticket Number</p>
+                  <Calendar className='w-6 h-6' />
+                  <p>{format(scheduleDate, 'PP')}</p>
                 </div>
-                <h2 className='text-5xl font-bold text-center'>
-                  {ticketNumber}
-                </h2>
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-2 justify-center'>
+                    <TicketIcon className='w-6 h-6' />
+                    <p>Ticket Number</p>
+                  </div>
+                  <h2 className='text-5xl font-bold text-center'>
+                    {ticketNumber}
+                  </h2>
+                </div>
               </div>
+              {!isPrint && (
+                <div className='justify-self-end w-full pt-4'>
+                  <Button
+                    onClick={() => mutate(id)}
+                    disabled={cancelLoading}
+                    className='w-full'>
+                    {cancelLoading && (
+                      <Loader2 className='w-4 h-4 animate-spin mr-2' />
+                    )}
+                    Cancel Queue Position
+                  </Button>
+                </div>
+              )}
             </div>
-            {!isPrint && (
-              <div className='justify-self-end w-full'>
-                <Button
-                  onClick={() => mutate(id)}
-                  disabled={cancelLoading}
-                  className='w-full'>
-                  {cancelLoading && (
-                    <Loader2 className='w-4 h-4 animate-spin mr-2' />
-                  )}
-                  Cancel Queue Position
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       </div>
