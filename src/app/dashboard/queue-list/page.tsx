@@ -99,10 +99,10 @@ export default function QueueList() {
                               ? 'complete'
                               : !item.isActive
                               ? 'destructive'
-                              : new Date(item.scheduleDate).toDateString() <
+                              : new Date(item.scheduleDate).toDateString() >
                                 new Date().toDateString()
                               ? 'warning' // Missed
-                              : new Date(item.scheduleDate).toDateString() >
+                              : new Date(item.scheduleDate).toDateString() <
                                 new Date().toDateString()
                               ? 'default' // Upcoming
                               : 'pending' // Today
@@ -111,10 +111,10 @@ export default function QueueList() {
                             ? 'Complete'
                             : !item.isActive
                             ? 'Cancelled'
-                            : new Date(item.scheduleDate).toDateString() <
+                            : new Date(item.scheduleDate).toDateString() >
                               new Date().toDateString()
                             ? 'Missed'
-                            : new Date(item.scheduleDate).toDateString() >
+                            : new Date(item.scheduleDate).toDateString() <
                               new Date().toDateString()
                             ? 'Upcoming'
                             : 'Pending'}
