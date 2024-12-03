@@ -99,11 +99,10 @@ export default function QueueList() {
                               ? 'complete'
                               : !item.isActive
                               ? 'destructive'
-                              : new Date(item.scheduleDate).toDateString() >
-                                new Date().toDateString()
+                              : new Date(item.scheduleDate).getTime() <
+                                startOfDay
                               ? 'warning' // Missed
-                              : new Date(item.scheduleDate).toDateString() <
-                                new Date().toDateString()
+                              : new Date(item.scheduleDate).getTime() > endOfDay
                               ? 'default' // Upcoming
                               : 'pending' // Today
                           }>
@@ -111,11 +110,9 @@ export default function QueueList() {
                             ? 'Complete'
                             : !item.isActive
                             ? 'Cancelled'
-                            : new Date(item.scheduleDate).toDateString() >
-                              new Date().toDateString()
+                            : new Date(item.scheduleDate).getTime() < startOfDay
                             ? 'Missed'
-                            : new Date(item.scheduleDate).toDateString() <
-                              new Date().toDateString()
+                            : new Date(item.scheduleDate).getTime() > endOfDay
                             ? 'Upcoming'
                             : 'Pending'}
                         </Badge>

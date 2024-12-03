@@ -17,6 +17,7 @@ import usePagination from '@/hooks/use-pagination';
 import Pagination from '@/components/pagination';
 import AddAnnouncement from './_components/add-announcement';
 import EditAnnouncement from './_components/edit-announcement';
+import DeleteAnnouncement from './_components/delete-announcement';
 
 function AnnouncementHeader() {
   return (
@@ -66,9 +67,7 @@ export default function Announcements() {
                       </TableCell>
                       <TableCell className='flex justify-center'>
                         <EditAnnouncement announcement={item} />
-                        <Button size='icon' variant='ghost'>
-                          <Trash className='w-4 h-4 text-red-400' />
-                        </Button>
+                        <DeleteAnnouncement announcement={item} />
                       </TableCell>
                     </TableRow>
                   ))}
