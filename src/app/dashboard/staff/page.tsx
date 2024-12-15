@@ -77,9 +77,6 @@ export default function Staff() {
                       </TableCell>
                       <TableCell className='flex justify-center'>
                         <EditStaff staff={item} />
-                        <Button size='icon' variant='ghost'>
-                          <Trash className='w-4 h-4 text-red-400' />
-                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
