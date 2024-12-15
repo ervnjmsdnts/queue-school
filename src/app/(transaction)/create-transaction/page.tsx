@@ -256,7 +256,7 @@ export default function CreateTransaction() {
           />
           <div className='flex w-full items-center gap-2 lg:justify-center'>
             <Button asChild className='w-full' type='button' variant='outline'>
-              <Link href='/transaction'>Cancel</Link>
+              <Link href='/'>Cancel</Link>
             </Button>
             <Button className='w-full' disabled={isLoading}>
               {isLoading && <Loader2 className='w-4 h-4 mr-2 animate-spin' />}
