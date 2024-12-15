@@ -1,4 +1,4 @@
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { Schema } from './schema';
 import { db } from '@/lib/firebase';
 
