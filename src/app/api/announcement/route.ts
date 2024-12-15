@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { cloudinary } from '@/lib/cloudinary';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -24,7 +24,7 @@ async function uploadFile(file: File) {
   return { url: result.url, name: file.name };
 }
 
-export async function PUT(request: NextResponse) {
+export async function PUT(request: NextRequest) {
   try {
     const payload = await request.formData();
 
@@ -63,7 +63,7 @@ export async function PUT(request: NextResponse) {
   }
 }
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     const payload = await request.formData();
 
