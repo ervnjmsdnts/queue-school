@@ -36,7 +36,6 @@ import {
 } from '@/components/ui/select';
 import { useCollection } from '@/hooks/use-collection';
 import { Counter } from '@/lib/types';
-import { where } from 'firebase/firestore';
 
 export default function EditStaff({ staff }: { staff: EditSchema }) {
   const [open, setIsOpen] = useState(false);
@@ -47,7 +46,6 @@ export default function EditStaff({ staff }: { staff: EditSchema }) {
 
   const { isLoading: counterLoading, items } = useCollection<Counter>({
     collectionName: 'counters',
-    queryConstraints: [where('isActive', '==', true)],
   });
 
   const { mutate, isLoading } = useMutation({
@@ -119,7 +117,7 @@ export default function EditStaff({ staff }: { staff: EditSchema }) {
               name='counter'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Counter</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value.toString()}>
