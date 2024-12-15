@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -9,14 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Computer, Loader2, SquarePen, Trash } from 'lucide-react';
+import { Computer, Loader2 } from 'lucide-react';
 import AddCounter from './_components/add-counter';
 import { useCollection } from '@/hooks/use-collection';
-import { where } from 'firebase/firestore';
 import { type Counter } from '@/lib/types';
 import usePagination from '@/hooks/use-pagination';
 import Pagination from '@/components/pagination';
 import EditCounter from './_components/edit-counter';
+import DeactivateCounter from './_components/deactivate-counter';
+import ActivateCounter from './_components/activate-counter';
 
 function CounterHeader() {
   return (
@@ -33,8 +33,9 @@ function CounterHeader() {
 export default function Counter() {
   const { isLoading, items } = useCollection<Counter>({
     collectionName: 'counters',
-    queryConstraints: [where('isActive', '==', true)],
   });
+
+  console.log(items);
 
   const { currentItems, paginate, currentPage, totalPages } =
     usePagination<Counter>(items);
@@ -64,9 +65,11 @@ export default function Counter() {
                       <TableCell>{item.description}</TableCell>
                       <TableCell className='flex justify-center'>
                         <EditCounter counter={item} />
-                        <Button size='icon' variant='ghost'>
-                          <Trash className='w-4 h-4 text-red-400' />
-                        </Button>
+                        {item.isActive ? (
+                          <DeactivateCounter counter={item} />
+                        ) : (
+                          <ActivateCounter counter={item} />
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -20,3 +20,11 @@ export async function editCounter(payload: Schema & { id: string }) {
     ...data,
   });
 }
+
+export async function deactivateCounter(id: string) {
+  await updateDoc(doc(db, 'counters', `${id}`), { isActive: false });
+}
+
+export async function activateCounter(id: string) {
+  await updateDoc(doc(db, 'counters', `${id}`), { isActive: true });
+}
