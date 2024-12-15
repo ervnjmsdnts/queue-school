@@ -23,6 +23,10 @@ export type Announcement = {
   id: string;
   title: string;
   description: string;
+  imageUrl?: string;
+  imageName?: string;
+  videoUrl?: string;
+  videoName?: string;
   createdAt: number;
   isActive: boolean;
 };

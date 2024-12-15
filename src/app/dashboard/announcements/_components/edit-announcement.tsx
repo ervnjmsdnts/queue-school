@@ -95,6 +95,44 @@ export default function EditAnnouncement({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name='image'
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      accept='image/jpeg,image/png'
+                      type='file'
+                      onChange={(e) =>
+                        onChange(e.target.files && e.target.files[0])
+                      }
+                      {...fieldProps}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='video'
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Video</FormLabel>
+                  <FormControl>
+                    <Input
+                      accept='video/mp4,video/quicktime'
+                      type='file'
+                      onChange={(e) =>
+                        onChange(e.target.files && e.target.files[0])
+                      }
+                      {...fieldProps}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
             <DialogFooter>
               <DialogClose asChild>

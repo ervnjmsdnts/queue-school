@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -9,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, Megaphone, SquarePen, Trash } from 'lucide-react';
+import { ExternalLink, Loader2, Megaphone } from 'lucide-react';
 import { useCollection } from '@/hooks/use-collection';
 import { where } from 'firebase/firestore';
 import { type Announcement } from '@/lib/types';
@@ -18,6 +17,8 @@ import Pagination from '@/components/pagination';
 import AddAnnouncement from './_components/add-announcement';
 import EditAnnouncement from './_components/edit-announcement';
 import DeleteAnnouncement from './_components/delete-announcement';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 function AnnouncementHeader() {
   return (
@@ -55,6 +56,8 @@ export default function Announcements() {
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Description</TableHead>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Video</TableHead>
                     <TableHead className='text-center'>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -64,6 +67,24 @@ export default function Announcements() {
                       <TableCell>{item.title}</TableCell>
                       <TableCell className='max-w-96 truncate'>
                         {item.description}
+                      </TableCell>
+                      <TableCell>
+                        {item.imageUrl && item.imageName && (
+                          <Button variant='link' className='p-0' asChild>
+                            <Link href={item.imageUrl} target='_blank'>
+                              View <ExternalLink className='w-4 h-4 ml-2' />
+                            </Link>
+                          </Button>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {item.videoUrl && item.videoName && (
+                          <Button variant='link' className='p-0' asChild>
+                            <Link href={item.videoUrl} target='_blank'>
+                              View <ExternalLink className='w-4 h-4 ml-2' />
+                            </Link>
+                          </Button>
+                        )}
                       </TableCell>
                       <TableCell className='flex justify-center'>
                         <EditAnnouncement announcement={item} />

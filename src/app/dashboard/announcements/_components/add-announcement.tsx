@@ -32,6 +32,11 @@ export default function AddAnnouncement() {
   const [isOpen, setIsOpen] = useState(false);
   const form = useForm<Schema>({ resolver: zodResolver(schema) });
 
+  const handleClose = (open: boolean) => {
+    form.reset();
+    setIsOpen(open);
+  };
+
   const { mutate, isLoading } = useMutation({
     mutationFn: addAnnouncement,
     onSuccess: (data) => {
@@ -44,13 +49,11 @@ export default function AddAnnouncement() {
   });
 
   const onSubmit = (data: Schema) => {
-    mutate({
-      ...data,
-    });
+    mutate({ ...data });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogTrigger asChild>
         <Button>Add New Announcement</Button>
       </DialogTrigger>
@@ -80,6 +83,44 @@ export default function AddAnnouncement() {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='image'
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      accept='image/jpeg,image/png'
+                      type='file'
+                      onChange={(e) =>
+                        onChange(e.target.files && e.target.files[0])
+                      }
+                      {...fieldProps}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='video'
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel>Video</FormLabel>
+                  <FormControl>
+                    <Input
+                      accept='video/mp4,video/quicktime'
+                      type='file'
+                      onChange={(e) =>
+                        onChange(e.target.files && e.target.files[0])
+                      }
+                      {...fieldProps}
+                    />
                   </FormControl>
                 </FormItem>
               )}
