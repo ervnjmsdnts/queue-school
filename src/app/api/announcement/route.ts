@@ -9,19 +9,25 @@ async function uploadFile(file: File) {
 
   const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
 
-  const result = await new Promise<{ url: string }>((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream({ resource_type: resourceType }, function (error, result) {
-        if (error || result === undefined) {
-          reject(error || new Error('Upload result is undefined'));
-          return;
-        }
-        resolve(result);
-      })
-      .end(buffer);
-  });
+  const result = await new Promise<{ url: string; public_id: string }>(
+    (resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          { resource_type: resourceType },
+          function (error, result) {
+            if (error || result === undefined) {
+              reject(error || new Error('Upload result is undefined'));
+              return;
+            }
+            console.log({ result });
+            resolve(result);
+          },
+        )
+        .end(buffer);
+    },
+  );
 
-  return { url: result.url, name: file.name };
+  return { url: result.url, name: file.name, publicId: result.public_id };
 }
 
 export async function PUT(request: NextRequest) {
@@ -40,9 +46,10 @@ export async function PUT(request: NextRequest) {
     };
     if (video) {
       const file = video as File;
-      const { url, name } = await uploadFile(file);
+      const { url, name, publicId } = await uploadFile(file);
       data.videoUrl = url;
       data.videoName = name;
+      data.videoPublicId = publicId;
     }
     if (image) {
       const file = image as File;
@@ -80,9 +87,10 @@ export async function POST(request: NextRequest) {
     };
     if (video) {
       const file = video as File;
-      const { url, name } = await uploadFile(file);
+      const { url, name, publicId } = await uploadFile(file);
       data.videoUrl = url;
       data.videoName = name;
+      data.videoPublicId = publicId;
     }
     if (image) {
       const file = image as File;

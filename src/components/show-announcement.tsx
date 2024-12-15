@@ -12,39 +12,55 @@ import {
   DrawerTrigger,
 } from './ui/drawer';
 import { format } from 'date-fns';
+import { useState } from 'react';
+import AnnouncementDialog from './announcement-dialog';
 
 function Announcements({ items }: { items: Announcement[] }) {
+  const [selectedAnnouncement, setSelectedAnnouncement] =
+    useState<Announcement | null>(null);
+
+  const handleClose = () => {
+    setSelectedAnnouncement(null);
+  };
+
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant='outline'>Show</Button>
-      </DrawerTrigger>
-      <DrawerContent className='h-[90%]'>
-        <DrawerHeader>
-          <DrawerTitle className='flex items-center gap-1'>
-            <Megaphone className='w-6 h-6 mr-2' />
-            Announcements
-          </DrawerTitle>
-        </DrawerHeader>
-        <div className='grid gap-2 p-4'>
-          {items.map((item) => (
-            <div className='border rounded-md p-4' key={item.id}>
-              <div className='flex justify-between'>
-                <h4 className='font-semibold max-w-60 text-lg'>{item.title}</h4>
-                <div className='flex gap-1'>
-                  <Clock className='w-4 h-4 text-muted-foreground' />
+    <>
+      <AnnouncementDialog
+        announcement={selectedAnnouncement}
+        handleClose={handleClose}
+      />
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant='outline'>Show</Button>
+        </DrawerTrigger>
+        <DrawerContent className='h-[90%]'>
+          <DrawerHeader>
+            <DrawerTitle className='flex items-center gap-1'>
+              <Megaphone className='w-6 h-6 mr-2' />
+              Announcements
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className='grid gap-2 p-4'>
+            {items.map((item) => (
+              <div
+                className='border rounded-md p-4'
+                onClick={() => setSelectedAnnouncement(item)}
+                key={item.id}>
+                <div className='flex justify-between items-center'>
+                  <h4 className='font-semibold max-w-60 truncate'>
+                    {item.title}
+                  </h4>
                   <div className='text-right leading-4 text-muted-foreground text-sm'>
                     <p>{format(item.createdAt, 'PP')}</p>
                     <p>{format(item.createdAt, 'p')}</p>
                   </div>
                 </div>
               </div>
-              <p className='text-muted-foreground'>{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </DrawerContent>
-    </Drawer>
+            ))}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
 

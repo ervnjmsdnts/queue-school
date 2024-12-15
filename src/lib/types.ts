@@ -27,6 +27,7 @@ export type Announcement = {
   imageName?: string;
   videoUrl?: string;
   videoName?: string;
+  videoPublicId?: string;
   createdAt: number;
   isActive: boolean;
 };
