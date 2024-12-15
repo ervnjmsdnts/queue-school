@@ -146,6 +146,11 @@ export default function CreateTransaction() {
                         key={counter.id}
                         value={counter.counterNum.toString()}>
                         Counter {counter.counterNum}
+                        {counter.description && (
+                          <p className='text-xs text-muted-foreground'>
+                            {counter.description}
+                          </p>
+                        )}
                       </SelectItem>
                     ))}
                   </SelectContent>

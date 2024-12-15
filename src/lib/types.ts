@@ -14,6 +14,7 @@ export type Staff = {
 export type Counter = {
   id: string;
   counterNum: number;
+  description?: string;
   createdAt: number;
   isActive: boolean;
 };

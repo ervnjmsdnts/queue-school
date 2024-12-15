@@ -53,6 +53,7 @@ export default function Counter() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Counter Number</TableHead>
+                    <TableHead>Description</TableHead>
                     <TableHead className='text-center'>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -60,6 +61,7 @@ export default function Counter() {
                   {currentItems.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>{item.counterNum}</TableCell>
+                      <TableCell>{item.description}</TableCell>
                       <TableCell className='flex justify-center'>
                         <EditCounter counter={item} />
                         <Button size='icon' variant='ghost'>
