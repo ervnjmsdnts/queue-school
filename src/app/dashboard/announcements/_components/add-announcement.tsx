@@ -92,7 +92,14 @@ export default function AddAnnouncement() {
               name='image'
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>
+                    <p>
+                      Image{' '}
+                      <span className='text-xs text-muted-foreground'>
+                        (Maximum of 15MB)
+                      </span>
+                    </p>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       accept='image/jpeg,image/png'
@@ -111,7 +118,14 @@ export default function AddAnnouncement() {
               name='video'
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
-                  <FormLabel>Video</FormLabel>
+                  <FormLabel>
+                    <p>
+                      Video{' '}
+                      <span className='text-xs text-muted-foreground'>
+                        (Maximum of 15MB)
+                      </span>
+                    </p>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       accept='video/mp4,video/quicktime'
