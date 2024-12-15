@@ -56,14 +56,20 @@ export default function Dashboard() {
   });
 
   const filteredTickets = useMemo(() => {
-    if (!items || !date || !date.from || !date.to) {
+    if (!items || !date || !date.from) {
       return [];
     }
 
+    const fromTime = new Date(date.from);
+    fromTime.setHours(0, 0, 0, 0); // Start of the day
+
+    const toTime = date.to
+      ? new Date(date.to).setHours(23, 59, 59, 999)
+      : new Date(date.from).setHours(23, 59, 59, 999);
+
     return items.filter(
       (item) =>
-        item.createdAt >= date!.from!.getTime() &&
-        item.createdAt <= date!.to!.getTime(),
+        item.createdAt >= fromTime.getTime() && item.createdAt <= toTime,
     );
   }, [items, date]);
 
