@@ -68,6 +68,7 @@ type PrintTicketType = {
   scheduleDate: number;
   ticketNumber: string;
   isPrint?: boolean;
+  numberInLine: number;
   id: string;
 };
 
@@ -77,6 +78,7 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
       type,
       counter,
       scheduleDate,
+      numberInLine,
       ticketNumber,
       isPrint = false,
       id,
@@ -104,7 +106,7 @@ const PrintTicket = forwardRef<HTMLDivElement, PrintTicketType>(
           <div className='p-4'>
             <div className='flex flex-col gap-2 items-center'>
               <p className='text-center'>You are currently number</p>
-              <h2 className='text-5xl font-bold text-center'>1</h2>
+              <h2 className='text-5xl font-bold text-center'>{numberInLine}</h2>
               <p className='text-center'>
                 In line for{' '}
                 <span className='font-semibold'>Counter {counter}</span>

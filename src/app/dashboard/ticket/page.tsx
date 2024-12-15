@@ -26,8 +26,6 @@ export default function Ticket() {
       where('counter', '==', user?.counter),
       where('isComplete', '==', false),
       where('isActive', '==', true),
-      // where('scheduleDate', '>=', startOfDay), // Only include tickets scheduled for today
-      // where('scheduleDate', '<=', endOfDay),
     ],
     sortField: 'createdAt',
     sortBy: 'asc',
@@ -39,6 +37,13 @@ export default function Ticket() {
         item.scheduleDate >= startOfDay && item.scheduleDate <= endOfDay,
     );
   }, [items, endOfDay, startOfDay]);
+
+  const scheduledItemsWithLineNumber = useMemo(() => {
+    return scheduledItems.map((item, index) => ({
+      ...item,
+      numberInLine: index + 1,
+    }));
+  }, [scheduledItems]);
 
   const { isLoading: completeLoading, mutate } = useMutation({
     mutationFn: completeTicket,
@@ -68,14 +73,14 @@ export default function Ticket() {
               <TicketIcon className='w-8 h-8' />
               Ticket
             </div>
-            {scheduledItems.length > 0 && (
+            {scheduledItemsWithLineNumber.length > 0 && (
               <Button onClick={() => printTicket()}>
                 <Printer className='w-4 h-4 mr-2' />
                 Print
               </Button>
             )}
           </div>
-          {scheduledItems.length === 0 ? (
+          {scheduledItemsWithLineNumber.length === 0 ? (
             <div className='flex items-center justify-center'>
               <h3 className='font-semibold text-muted-foreground text-2xl'>
                 No Items in Queue
@@ -84,7 +89,11 @@ export default function Ticket() {
           ) : (
             <>
               <div className='flex-grow max-w-lg w-full mx-auto'>
-                <PrintTicket ref={printRef} isPrint {...scheduledItems[0]} />
+                <PrintTicket
+                  ref={printRef}
+                  isPrint
+                  {...scheduledItemsWithLineNumber[0]}
+                />
               </div>
               <div className='self-end'>
                 <Button

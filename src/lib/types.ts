@@ -42,6 +42,7 @@ export type Ticket = {
   scheduleDate: number;
   ticketNumber: string;
   completionDate?: number;
+  userId: string;
   customer: {
     name: string;
     contactNumber: string;
