@@ -138,7 +138,6 @@ export default function QueueList() {
                     <TableHead>Serve</TableHead>
                     <TableHead>Created At</TableHead>
                     <TableHead>Scheduled Date</TableHead>
-                    {/* <TableHead className='text-center'>Action</TableHead> */}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -173,14 +172,6 @@ export default function QueueList() {
                       </TableCell>
                       <TableCell>{format(item.createdAt, 'PP')}</TableCell>
                       <TableCell>{format(item.scheduleDate, 'PP')}</TableCell>
-                      {/* <TableCell className='flex justify-center'>
-                        <Button size='icon' variant='ghost'>
-                          <Check className='w-4 h-4 text-green-500' />
-                        </Button>
-                        <Button size='icon' variant='ghost'>
-                          <Trash className='w-4 h-4 text-red-400' />
-                        </Button>
-                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
