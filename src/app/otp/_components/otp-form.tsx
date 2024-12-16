@@ -18,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { requestNewOTPCode } from '../actions';
+import { requestNewOTPCode, validateOTP } from '../actions';
 import { toast } from 'react-toastify';
 import { schema, Schema } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,9 +26,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 export default function OTPForm({
   userId,
   userContactNumber,
+  otp,
+  otpExpiresAt,
 }: {
   userId: string;
   userContactNumber: string;
+  otp: string;
+  otpExpiresAt: number;
 }) {
   const form = useForm<Schema>({ resolver: zodResolver(schema) });
 
@@ -41,7 +45,25 @@ export default function OTPForm({
     }
   };
 
-  const onSubmit = (data: Schema) => {};
+  const onSubmit = async (data: Schema) => {
+    if (data.code !== otp) {
+      return toast.error('Incorrect One-Time Password');
+    }
+
+    const today = new Date().getTime();
+    if (today > otpExpiresAt) {
+      return toast.error(
+        'One-Time Password has expired. Please request a new one-time password',
+      );
+    }
+
+    try {
+      await validateOTP(userId);
+      toast.success('OTP verified. Redirecting you');
+    } catch (error) {
+      toast.error('Something went wrong when submitting OTP');
+    }
+  };
 
   const isLoading = false;
   return (

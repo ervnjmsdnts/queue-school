@@ -79,8 +79,6 @@ export default function Transaction() {
     [counterLoading, itemsLoading, completedLoading],
   );
 
-  console.log({ numberInLine });
-
   return (
     <div className='flex p-4 items-center justify-center flex-col flex-1 gap-2'>
       {isLoading ? (

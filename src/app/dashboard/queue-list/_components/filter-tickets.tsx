@@ -12,6 +12,7 @@ const items = [
   { value: 'pending', label: 'Pending' },
   { value: 'complete', label: 'Complete' },
   { value: 'cancelled', label: 'Cancelled' },
+  { value: 'upcoming', label: 'Upcoming' },
 ];
 
 export default function FilterTickets() {

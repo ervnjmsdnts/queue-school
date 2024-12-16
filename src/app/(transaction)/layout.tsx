@@ -1,4 +1,3 @@
-import ShowAnnouncement from '@/components/show-announcement';
 import TransactionNav from '@/components/transaction-nav';
 import { db } from '@/lib/firebase';
 import { clientConfig, serverConfig } from '@/lib/firebase/config';
@@ -33,10 +32,9 @@ export default async function TransactionLayout({
       return redirect('/dashboard');
     } else if (user.role === 'staff') {
       return redirect('/dashboard/queue-list?filter=all');
+    } else if (user.role === 'user' && !user.isOTPVerified) {
+      return redirect('/otp');
     }
-    // } else if (user.role === 'user' && !user.isOTPVerified) {
-    //   return redirect('/otp');
-    // }
   }
 
   return (

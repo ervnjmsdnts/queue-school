@@ -38,3 +38,15 @@ export async function requestNewOTPCode(
     throw new Error((error as Error).message);
   }
 }
+
+export async function validateOTP(userId: string) {
+  try {
+    await updateDoc(doc(db, 'users', `${userId}`), {
+      isOTPVerified: true,
+    });
+
+    revalidatePath('/otp');
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
+}

@@ -61,26 +61,56 @@ export default function QueueList() {
   const filteredTickets = useMemo(() => {
     if (!items || !filter) return [];
 
-    let filteredItems = items.filter(
+    // Separate tickets for today and upcoming
+    const todayTickets = items.filter(
       (item) =>
         item.scheduleDate >= startOfDay && item.scheduleDate <= endOfDay,
     );
 
-    if (filter && filter !== 'all') {
-      const filters = filter.split(',');
+    const upcomingTickets = items.filter(
+      (item) => item.scheduleDate > endOfDay,
+    );
 
-      filteredItems = filteredItems.filter((item) => {
+    if (filter === 'all') {
+      return [...todayTickets, ...upcomingTickets];
+    }
+
+    const filters = filter.split(',');
+
+    let filteredTodayTickets: Ticket[] = [];
+    let filteredUpcomingTickets: Ticket[] = [];
+
+    // Filter todayTickets if filters other than 'upcoming' are present
+    if (filters.some((f) => f !== 'upcoming')) {
+      filteredTodayTickets = todayTickets.filter((item) => {
         const status = item.isComplete
           ? 'complete'
           : !item.isActive
           ? 'cancelled'
+          : item.scheduleDate > endOfDay
+          ? 'upcoming'
           : 'pending';
 
         return filters.includes(status);
       });
     }
 
-    return filteredItems;
+    // Filter upcomingTickets if 'upcoming' is in the filters
+    if (filters.includes('upcoming')) {
+      filteredUpcomingTickets = upcomingTickets.filter((item) => {
+        const status = item.isComplete
+          ? 'complete'
+          : !item.isActive
+          ? 'cancelled'
+          : item.scheduleDate > endOfDay
+          ? 'upcoming'
+          : 'pending';
+
+        return filters.includes(status);
+      });
+    }
+
+    return [...filteredTodayTickets, ...filteredUpcomingTickets];
   }, [items, filter, startOfDay, endOfDay]);
 
   const numberInQueue = filteredTickets.length;
@@ -123,12 +153,16 @@ export default function QueueList() {
                               ? 'complete'
                               : !item.isActive
                               ? 'destructive'
+                              : item.scheduleDate > endOfDay
+                              ? 'warning'
                               : 'pending' // Today
                           }>
                           {item.isComplete
                             ? 'Complete'
                             : !item.isActive
                             ? 'Cancelled'
+                            : item.scheduleDate > endOfDay
+                            ? 'Upcoming'
                             : 'Pending'}
                         </Badge>
                       </TableCell>

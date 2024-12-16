@@ -21,7 +21,7 @@ export type User = {
   role: string;
   isOTPVerified?: boolean;
   otp?: string;
-  otpExpiresAt?: string;
+  otpExpiresAt?: number;
 };
 
 export type Counter = {

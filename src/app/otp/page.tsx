@@ -44,7 +44,7 @@ export default async function OTPPage() {
     <div className='w-screen h-screen flex flex-col'>
       <TransactionNav user={user} />
       <div className='flex flex-grow items-center justify-center'>
-        {!user.isOTPVerified && !user.otp ? (
+        {!user.isOTPVerified && !user.otp && !user.otpExpiresAt ? (
           <div className='flex gap-3 flex-col items-center'>
             <CircleAlert className='w-8 h-8 text-red-500' />
             <p>You have no OTP Code associated with your account</p>
@@ -57,6 +57,8 @@ export default async function OTPPage() {
           <OTPForm
             userId={decodedToken.uid}
             userContactNumber={user.contactNumber}
+            otp={user.otp!}
+            otpExpiresAt={user.otpExpiresAt!}
           />
         )}
       </div>
