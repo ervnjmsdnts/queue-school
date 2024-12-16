@@ -6,6 +6,7 @@ export async function completeTicket(ticketId: string) {
     await updateDoc(doc(db, 'tickets', `${ticketId}`), {
       isComplete: true,
       completionDate: new Date().getTime(),
+      isCompleteView: false,
     });
   } catch (error) {
     throw new Error((error as Error).message);

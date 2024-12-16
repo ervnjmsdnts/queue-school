@@ -28,12 +28,15 @@ export default async function TransactionLayout({
 
   const user = (await getDoc(ref)).data();
 
-  if (user && (user.role === 'admin' || user.role === 'staff')) {
+  if (user) {
     if (user.role === 'admin') {
-      redirect('/dashboard');
+      return redirect('/dashboard');
     } else if (user.role === 'staff') {
-      redirect('/dashboard/queue-list');
+      return redirect('/dashboard/queue-list?filter=all');
     }
+    // } else if (user.role === 'user' && !user.isOTPVerified) {
+    //   return redirect('/otp');
+    // }
   }
 
   return (

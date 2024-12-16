@@ -1,8 +1,6 @@
 'use client';
 import Pagination from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog } from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -19,6 +17,9 @@ import { format } from 'date-fns';
 import { where } from 'firebase/firestore';
 import { ClipboardList, Loader2 } from 'lucide-react';
 import AddManual from './_components/add-manual';
+import { useMemo } from 'react';
+import FilterTickets from './_components/filter-tickets';
+import { useSearchParams } from 'next/navigation';
 
 function QueueListHeader({ inQueue }: { inQueue: number }) {
   return (
@@ -32,7 +33,10 @@ function QueueListHeader({ inQueue }: { inQueue: number }) {
           </h3>
         </div>
       </div>
-      <AddManual />
+      <div className='flex gap-2 items-center'>
+        <FilterTickets />
+        <AddManual />
+      </div>
     </div>
   );
 }
@@ -41,28 +45,48 @@ export default function QueueList() {
   const user = getUserInfo();
   const { items, isLoading } = useCollection<Ticket>({
     collectionName: 'tickets',
-    queryConstraints: [
-      where('counter', '==', user?.counter),
-      where('isActive', '==', true),
-      where('isComplete', '==', false),
-    ],
-    sortField: 'scheduleDate',
-    sortBy: 'asc',
+    queryConstraints: [where('counter', '==', user?.counter)],
+    sortField: 'createdAt',
+    sortBy: 'desc',
   });
+
+  const searchParams = useSearchParams();
+
+  const filter = searchParams.get('filter');
 
   const today = new Date();
   const startOfDay = new Date(today.setHours(0, 0, 0, 0)).getTime(); // Start of today
   const endOfDay = new Date(today.setHours(23, 59, 59, 999)).getTime(); // End of today
 
-  const numberInQueue = items?.filter(
-    (item) =>
-      !item.isComplete &&
-      item.scheduleDate >= startOfDay && // Item's scheduleDate falls within today
-      item.scheduleDate <= endOfDay,
-  )?.length;
+  const filteredTickets = useMemo(() => {
+    if (!items || !filter) return [];
+
+    let filteredItems = items.filter(
+      (item) =>
+        item.scheduleDate >= startOfDay && item.scheduleDate <= endOfDay,
+    );
+
+    if (filter && filter !== 'all') {
+      const filters = filter.split(',');
+
+      filteredItems = filteredItems.filter((item) => {
+        const status = item.isComplete
+          ? 'complete'
+          : !item.isActive
+          ? 'cancelled'
+          : 'pending';
+
+        return filters.includes(status);
+      });
+    }
+
+    return filteredItems;
+  }, [items, filter, startOfDay, endOfDay]);
+
+  const numberInQueue = filteredTickets.length;
 
   const { currentItems, paginate, currentPage, totalPages } =
-    usePagination<Ticket>(items);
+    usePagination<Ticket>(filteredTickets);
 
   return (
     <div className='p-4 flex-1 flex flex-col'>
@@ -99,21 +123,12 @@ export default function QueueList() {
                               ? 'complete'
                               : !item.isActive
                               ? 'destructive'
-                              : new Date(item.scheduleDate).getTime() <
-                                startOfDay
-                              ? 'warning' // Missed
-                              : new Date(item.scheduleDate).getTime() > endOfDay
-                              ? 'default' // Upcoming
                               : 'pending' // Today
                           }>
                           {item.isComplete
                             ? 'Complete'
                             : !item.isActive
                             ? 'Cancelled'
-                            : new Date(item.scheduleDate).getTime() < startOfDay
-                            ? 'Missed'
-                            : new Date(item.scheduleDate).getTime() > endOfDay
-                            ? 'Upcoming'
                             : 'Pending'}
                         </Badge>
                       </TableCell>

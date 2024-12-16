@@ -5,10 +5,11 @@ import { useCollection } from '@/hooks/use-collection';
 import { type Ticket } from '@/lib/types';
 import { getUserInfo } from '@/lib/utils';
 import { where } from 'firebase/firestore';
-import { Loader2 } from 'lucide-react';
+import { CircleCheck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import PrintTicket from '@/components/print-ticket';
 import { useMemo } from 'react';
+import { ticketViewed } from './actions';
 
 export default function Transaction() {
   const user = getUserInfo();
@@ -32,6 +33,20 @@ export default function Transaction() {
     sortField: 'createdAt',
     sortBy: 'asc',
   });
+
+  const { items: completedItems, isLoading: completedLoading } =
+    useCollection<Ticket>({
+      collectionName: 'tickets',
+      queryConstraints: [
+        where('isComplete', '==', true),
+        where('userId', '==', user?.id),
+      ],
+      sortField: 'createdAt',
+    });
+
+  const allNonViewedCompletedItems = useMemo(() => {
+    return completedItems.filter((item) => !item.isCompleteView);
+  }, [completedItems]);
 
   const counter = useMemo(
     () =>
@@ -58,8 +73,8 @@ export default function Transaction() {
   }, [scheduledItems, counter, user?.id]);
 
   const isLoading = useMemo(
-    () => counterLoading || itemsLoading,
-    [counterLoading, itemsLoading],
+    () => counterLoading || itemsLoading || completedLoading,
+    [counterLoading, itemsLoading, completedLoading],
   );
 
   return (
@@ -70,9 +85,28 @@ export default function Transaction() {
         </div>
       ) : (
         <>
-          {counterItems.length > 0 ? (
+          {allNonViewedCompletedItems.length > 0 ? (
+            <div className='flex-grow h-full grid place-items-center'>
+              <div className='flex flex-col gap-2 items-center'>
+                <CircleCheck className='w-10 h-10 text-green-500' />
+                <p>
+                  Your ticket{' '}
+                  <span className='font-bold'>
+                    {allNonViewedCompletedItems[0].ticketNumber}
+                  </span>{' '}
+                  has been completed
+                </p>
+                <Button
+                  onClick={() =>
+                    ticketViewed(allNonViewedCompletedItems[0].id)
+                  }>
+                  Thank you
+                </Button>
+              </div>
+            </div>
+          ) : counterItems.length > 0 ? (
             <PrintTicket
-              {...items[0]}
+              {...counterItems[0]}
               numberInLine={numberInLine !== -1 ? numberInLine + 1 : 0}
             />
           ) : (

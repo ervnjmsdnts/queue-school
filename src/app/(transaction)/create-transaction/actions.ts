@@ -64,6 +64,8 @@ export async function addTicket(payload: Schema) {
       isActive: true,
       isComplete: false,
       ticketNumber: paddedTicketNumber,
+      ticketType: 'user',
+      isCompleteView: false,
       userId: user.id,
       ...payload,
       scheduleDate: scheduleDate.getTime(),

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { format, subDays } from 'date-fns';
 import { CSVLink } from 'react-csv';
@@ -25,7 +25,8 @@ import Chart from './_components/chart';
 import { useCollection } from '@/hooks/use-collection';
 import { Ticket } from '@/lib/types';
 import { where } from 'firebase/firestore';
-import { Loader2 } from 'lucide-react';
+import { FileSpreadsheet, Loader2, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 
 const initialDateRange: DateRange = {
   from: subDays(new Date(), 2),
@@ -44,6 +45,8 @@ const classType: Record<string, string> = {
 
 export default function Dashboard() {
   const [date, setDate] = useState<DateRange | undefined>(initialDateRange);
+
+  const tableRef = useRef<HTMLTableElement>(null);
 
   const { items, isLoading } = useCollection<Ticket>({
     collectionName: 'tickets',
@@ -72,6 +75,11 @@ export default function Dashboard() {
         item.createdAt >= fromTime.getTime() && item.createdAt <= toTime,
     );
   }, [items, date]);
+
+  const printTable = useReactToPrint({
+    contentRef: tableRef,
+    documentTitle: 'table',
+  });
 
   const csvData = useMemo(
     () =>
@@ -168,15 +176,21 @@ export default function Dashboard() {
                 />
               </PopoverContent>
             </Popover>
-            <Button asChild>
-              <CSVLink data={csvData} filename='report'>
-                Export
-              </CSVLink>
-            </Button>
+            <div className='flex items-center gap-1'>
+              <Button onClick={() => printTable()}>
+                Print <Printer className='w-4 h-4 ml-2' />
+              </Button>
+              <Button asChild>
+                <CSVLink data={csvData} filename='report'>
+                  Export CSV
+                  <FileSpreadsheet className='w-4 h-4 ml-2' />
+                </CSVLink>
+              </Button>
+            </div>
           </div>
           {/* Table */}
           <div className='border max-h-[400px] overflow-y-auto'>
-            <Table>
+            <Table ref={tableRef}>
               <TableHeader>
                 <TableRow>
                   <TableHead>Timestamp</TableHead>

@@ -6,7 +6,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { getTokens } from 'next-firebase-auth-edge';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   const tokens = await getTokens(cookies(), {
@@ -34,7 +34,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
       <Sidebar user={user} />
       <div className='w-[80%] flex flex-col overflow-scroll'>
         <Navbar user={user} />
-        {children}
+        <Suspense fallback='Loading...'>{children}</Suspense>
       </div>
     </div>
   );

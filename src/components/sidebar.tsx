@@ -29,7 +29,7 @@ const items = [
   },
   {
     name: 'Queue List',
-    route: '/dashboard/queue-list',
+    route: '/dashboard/queue-list?filter=all',
     icon: ClipboardList,
     role: 'staff',
   },

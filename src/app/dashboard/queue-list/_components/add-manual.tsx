@@ -231,7 +231,10 @@ export default function AddManual() {
                 <FormItem>
                   <FormLabel>Customer Contact Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <div className='flex gap-2 items-center'>
+                      <p className='text-sm text-muted-foreground'>+63</p>
+                      <Input {...field} />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}

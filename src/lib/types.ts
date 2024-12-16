@@ -11,6 +11,19 @@ export type Staff = {
   role: string;
 };
 
+export type User = {
+  id: string;
+  name: string;
+  createdAt: number;
+  isActive: boolean;
+  email: string;
+  contactNumber: string;
+  role: string;
+  isOTPVerified?: boolean;
+  otp?: string;
+  otpExpiresAt?: string;
+};
+
 export type Counter = {
   id: string;
   counterNum: number;
@@ -42,6 +55,8 @@ export type Ticket = {
   scheduleDate: number;
   ticketNumber: string;
   completionDate?: number;
+  ticketType: 'manual' | 'user';
+  isCompleteView: boolean;
   userId: string;
   customer: {
     name: string;
