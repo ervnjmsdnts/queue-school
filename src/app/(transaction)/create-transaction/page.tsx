@@ -58,6 +58,7 @@ export default function CreateTransaction() {
   useEffect(() => {
     const today = new Date();
     const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    const currentHour = today.getHours();
 
     // Map day numbers to toggle values
     const dayMap = [
@@ -74,7 +75,11 @@ export default function CreateTransaction() {
     if (currentDay === 0 || currentDay === 6) {
       setDisabledDays(dayMap); // Disable all for weekends
     } else {
-      setDisabledDays(dayMap.slice(0, currentDay)); // Disable days earlier than today
+      if (currentHour >= 17) {
+        setDisabledDays(dayMap.slice(0, currentDay + 1));
+      } else {
+        setDisabledDays(dayMap.slice(0, currentDay)); // Disable days earlier than today
+      }
     }
   }, []);
 

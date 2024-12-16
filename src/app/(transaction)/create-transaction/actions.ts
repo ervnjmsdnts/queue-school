@@ -64,7 +64,7 @@ export async function addTicket(payload: Schema) {
       },
     );
 
-    if (ticketsWithinTheScheduledDate.length >= 5) {
+    if (ticketsWithinTheScheduledDate.length >= 300) {
       throw new Error(
         `The maximum number of tickets (300) for ${
           payload.scheduleDate[0].toUpperCase() + payload.scheduleDate.slice(1)
