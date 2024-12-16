@@ -46,8 +46,33 @@ export async function addTicket(payload: Schema) {
     const scheduleDate = new Date(today);
     scheduleDate.setDate(today.getDate() + dayDifference);
 
-    // Get the latest ticket number
+    const startOfDay = new Date(scheduleDate.setHours(0, 0, 0, 0)).getTime(); // Start of today
+    const endOfDay = new Date(scheduleDate.setHours(23, 59, 59, 999)).getTime(); // End of today
+
+    // Query tickets created today
     const ticketsRef = collection(db, 'tickets');
+    const ticketsSnapshot = await getDocs(ticketsRef);
+
+    // Filter tickets within the scheduled date
+    const ticketsWithinTheScheduledDate = ticketsSnapshot.docs.filter(
+      (ticket) => {
+        const ticketData = ticket.data();
+        return (
+          ticketData.scheduleDate >= startOfDay &&
+          ticketData.scheduleDate <= endOfDay
+        );
+      },
+    );
+
+    if (ticketsWithinTheScheduledDate.length >= 5) {
+      throw new Error(
+        `The maximum number of tickets (300) for ${
+          payload.scheduleDate[0].toUpperCase() + payload.scheduleDate.slice(1)
+        } has been reached. No new tickets can be created.`,
+      );
+    }
+
+    // Get the latest ticket number
     const q = query(ticketsRef, orderBy('ticketNumber', 'desc'), limit(1));
     const querySnapshot = await getDocs(q);
 

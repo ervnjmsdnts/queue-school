@@ -60,7 +60,7 @@ export default function Sidebar({ user }: { user: any }) {
                 href={item.route}
                 className={cn(
                   'flex items-center gap-3 rounded-lg py-2 px-3 text-muted-foreground transition-all hover:text-primary',
-                  pathname === item.route && 'text-primary bg-muted',
+                  item.route.includes(pathname) && 'text-primary bg-muted',
                 )}>
                 <item.icon className='h-4 w-4' />
                 {item.name}

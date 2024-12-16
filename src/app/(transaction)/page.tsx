@@ -54,10 +54,12 @@ export default function Transaction() {
     [counterItems],
   );
 
-  // Get today's start and end timestamps
-  const today = new Date();
-  const startOfDay = new Date(today.setHours(0, 0, 0, 0)).getTime(); // Start of today
-  const endOfDay = new Date(today.setHours(23, 59, 59, 999)).getTime(); // End of today
+  const startOfDay = new Date(
+    new Date(counterItems[0]?.scheduleDate).setHours(0, 0, 0, 0),
+  ).getTime(); // Start of day
+  const endOfDay = new Date(
+    new Date(counterItems[0]?.scheduleDate).setHours(23, 59, 59, 999),
+  ).getTime(); // End of day
 
   const scheduledItems = useMemo(() => {
     return (items || []).filter(
@@ -76,6 +78,8 @@ export default function Transaction() {
     () => counterLoading || itemsLoading || completedLoading,
     [counterLoading, itemsLoading, completedLoading],
   );
+
+  console.log({ numberInLine });
 
   return (
     <div className='flex p-4 items-center justify-center flex-col flex-1 gap-2'>
