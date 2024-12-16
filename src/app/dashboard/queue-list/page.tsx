@@ -47,7 +47,7 @@ export default function QueueList() {
     collectionName: 'tickets',
     queryConstraints: [where('counter', '==', user?.counter)],
     sortField: 'createdAt',
-    sortBy: 'desc',
+    sortBy: 'asc',
   });
 
   const searchParams = useSearchParams();

@@ -20,9 +20,7 @@ import {
 } from '../../../components/ui/form';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
-import { useMutation } from 'react-query';
 import { useRouter } from 'next/navigation';
-import { registerUser } from '../actions';
 import { schema, Schema } from '../schema';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
