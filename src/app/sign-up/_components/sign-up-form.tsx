@@ -51,7 +51,9 @@ export default function SignUpForm() {
         isActive: true,
       });
 
-      toast.success('Successfully registered');
+      toast.success(
+        'Successfully registered. Please login as we have sent you an OTP code via SMS',
+      );
       router.push('/sign-in');
     } catch (error) {
       toast.error((error as Error).message);
