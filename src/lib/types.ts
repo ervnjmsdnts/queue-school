@@ -11,6 +11,17 @@ export type Staff = {
   role: string;
 };
 
+export type Rating = {
+  id: string;
+  rating: number;
+  createdAt: number;
+  isActive: boolean;
+  customer: {
+    name: string;
+    contactNumber: string;
+  };
+};
+
 export type User = {
   id: string;
   name: string;

@@ -6,7 +6,7 @@ import {
   Contact,
   LayoutDashboard,
   Megaphone,
-  Sheet,
+  Star,
   Ticket,
   Users,
 } from 'lucide-react';
@@ -40,6 +40,12 @@ const items = [
     icon: Megaphone,
     role: 'admin',
   },
+  {
+    name: 'Ratings',
+    route: '/dashboard/ratings',
+    icon: Star,
+    role: 'admin',
+  },
 ];
 
 export default function Sidebar({ user }: { user: any }) {
@@ -60,7 +66,7 @@ export default function Sidebar({ user }: { user: any }) {
                 href={item.route}
                 className={cn(
                   'flex items-center gap-3 rounded-lg py-2 px-3 text-muted-foreground transition-all hover:text-primary',
-                  item.route.includes(pathname) && 'text-primary bg-muted',
+                  item.route === pathname && 'text-primary bg-muted',
                 )}>
                 <item.icon className='h-4 w-4' />
                 {item.name}

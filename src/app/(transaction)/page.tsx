@@ -8,11 +8,12 @@ import { where } from 'firebase/firestore';
 import { CircleCheck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import PrintTicket from '@/components/print-ticket';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ticketViewed } from './actions';
 
 export default function Transaction() {
   const user = getUserInfo();
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const { items: counterItems, isLoading: counterLoading } =
     useCollection<Ticket>({
       collectionName: 'tickets',
@@ -89,21 +90,47 @@ export default function Transaction() {
         <>
           {allNonViewedCompletedItems.length > 0 ? (
             <div className='flex-grow h-full grid place-items-center'>
-              <div className='flex flex-col gap-2 items-center'>
-                <CircleCheck className='w-10 h-10 text-green-500' />
-                <p>
-                  Your ticket{' '}
-                  <span className='font-bold'>
-                    {allNonViewedCompletedItems[0].ticketNumber}
-                  </span>{' '}
-                  has been completed
-                </p>
-                <Button
-                  onClick={() =>
-                    ticketViewed(allNonViewedCompletedItems[0].id)
-                  }>
-                  Thank you
-                </Button>
+              <div className='flex flex-col gap-4 items-center'>
+                <div className='grid gap-1 place-items-center'>
+                  <CircleCheck className='w-10 h-10 text-green-500' />
+                  <p>
+                    Your ticket{' '}
+                    <span className='font-bold'>
+                      {allNonViewedCompletedItems[0].ticketNumber}
+                    </span>{' '}
+                    has been completed
+                  </p>
+                  <p>Please rate our service</p>
+                </div>
+                <div className='grid place-items-center gap-8'>
+                  <div className='flex items-center gap-2'>
+                    {[1, 2, 3, 4, 5].map((item) => (
+                      <Button
+                        onClick={() =>
+                          setSelectedRating((prev) =>
+                            prev === item ? null : item,
+                          )
+                        }
+                        key={item}
+                        className='text-lg'
+                        variant={
+                          selectedRating === item ? 'default' : 'outline'
+                        }>
+                        {item}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    disabled={!selectedRating}
+                    onClick={() =>
+                      ticketViewed(
+                        allNonViewedCompletedItems[0].id,
+                        selectedRating,
+                      )
+                    }>
+                    Submit
+                  </Button>
+                </div>
               </div>
             </div>
           ) : counterItems.length > 0 ? (
